@@ -177,10 +177,9 @@ def test_ndcg():
 @withDevice
 def test_ndcg_device(device):
     pred_index_mat = torch.tensor([[1, 0], [1, 2], [0, 2]], device=device)
-    edge_label_index = torch.tensor(
-        [[0, 0, 0, 2, 2], [0, 1, 2, 2, 1]], device=device)
-    edge_label_weight = torch.tensor(
-        [1.0, 2.0, 0.1, 3.0, 0.5], device=device)
+    edge_label_index = torch.tensor([[0, 0, 0, 2, 2], [0, 1, 2, 2, 1]],
+                                    device=device)
+    edge_label_weight = torch.tensor([1.0, 2.0, 0.1, 3.0, 0.5], device=device)
 
     metric = LinkPredNDCG(k=2).to(device)
     metric.update(pred_index_mat, edge_label_index)
