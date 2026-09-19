@@ -1,24 +1,20 @@
 # Code adapted from the G-Retriever paper: https://arxiv.org/abs/2402.07630
+from __future__ import annotations
+
 import gc
 import os
 from itertools import chain
-from typing import Any, Dict, Iterator, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional
 
 import torch
 from tqdm import tqdm
 
 from torch_geometric.data import InMemoryDataset
-from torch_geometric.llm.large_graph_indexer import (
-    EDGE_RELATION,
-    LargeGraphIndexer,
-    TripletLike,
-    get_features_for_triplets_groups,
-)
-from torch_geometric.llm.models import SentenceTransformer
-from torch_geometric.llm.utils.backend_utils import (
-    preprocess_triplet,
-    retrieval_via_pcst,
-)
+
+if TYPE_CHECKING:
+    from torch_geometric.llm.large_graph_indexer import (
+        TripletLike,
+    )
 
 
 class KGQABaseDataset(InMemoryDataset):
@@ -130,6 +126,12 @@ class KGQABaseDataset(InMemoryDataset):
         return chain.from_iterable(split_iterators)
 
     def _build_graph(self) -> None:
+        from torch_geometric.llm.large_graph_indexer import (
+            EDGE_RELATION,
+            LargeGraphIndexer,
+        )
+        from torch_geometric.llm.utils.backend_utils import preprocess_triplet
+
         print("Encoding graph...")
         trips = self._get_trips()
         self.indexer: LargeGraphIndexer = LargeGraphIndexer.from_triplets(
@@ -157,6 +159,14 @@ class KGQABaseDataset(InMemoryDataset):
         self.indexer.save(self.indexer_path)
 
     def _retrieve_subgraphs(self) -> None:
+        from torch_geometric.llm.large_graph_indexer import (
+            get_features_for_triplets_groups,
+        )
+        from torch_geometric.llm.utils.backend_utils import (
+            preprocess_triplet,
+            retrieval_via_pcst,
+        )
+
         raw_splits = [
             self.raw_dataset[split] for split in self.required_splits
         ]
@@ -221,6 +231,10 @@ class KGQABaseDataset(InMemoryDataset):
     def process(self) -> None:
         import datasets
         from pandas import DataFrame
+
+        from torch_geometric.llm.large_graph_indexer import LargeGraphIndexer
+        from torch_geometric.llm.models import SentenceTransformer
+
         self.raw_dataset = datasets.load_from_disk(self.raw_paths[0])
 
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
