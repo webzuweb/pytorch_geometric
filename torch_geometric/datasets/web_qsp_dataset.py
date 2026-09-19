@@ -4,7 +4,7 @@ from __future__ import annotations
 import gc
 import os
 from itertools import chain
-from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional
+from typing import TYPE_CHECKING, Any, Iterator
 
 import torch
 from tqdm import tqdm
@@ -12,9 +12,7 @@ from tqdm import tqdm
 from torch_geometric.data import InMemoryDataset
 
 if TYPE_CHECKING:
-    from torch_geometric.llm.large_graph_indexer import (
-        TripletLike,
-    )
+    from torch_geometric.llm.large_graph_indexer import TripletLike
 
 
 class KGQABaseDataset(InMemoryDataset):
@@ -49,8 +47,8 @@ class KGQABaseDataset(InMemoryDataset):
         force_reload: bool = False,
         verbose: bool = False,
         use_pcst: bool = True,
-        load_dataset_kwargs: Optional[Dict[str, Any]] = None,
-        retrieval_kwargs: Optional[Dict[str, Any]] = None,
+        load_dataset_kwargs: dict[str, Any] | None = None,
+        retrieval_kwargs: dict[str, Any] | None = None,
     ) -> None:
         self.split = split
         self.dataset_name = dataset_name
@@ -89,11 +87,11 @@ class KGQABaseDataset(InMemoryDataset):
         self.load(self.processed_paths[self.required_splits.index(split)])
 
     @property
-    def raw_file_names(self) -> List[str]:
+    def raw_file_names(self) -> list[str]:
         return ["raw.pt"]
 
     @property
-    def processed_file_names(self) -> List[str]:
+    def processed_file_names(self) -> list[str]:
         return ["train_data.pt", "val_data.pt", "test_data.pt"]
 
     def download(self) -> None:
@@ -297,8 +295,8 @@ class WebQSPDataset(KGQABaseDataset):
         force_reload: bool = False,
         verbose: bool = False,
         use_pcst: bool = True,
-        load_dataset_kwargs: Optional[Dict[str, Any]] = None,
-        retrieval_kwargs: Optional[Dict[str, Any]] = None,
+        load_dataset_kwargs: dict[str, Any] | None = None,
+        retrieval_kwargs: dict[str, Any] | None = None,
     ) -> None:
         load_dataset_kwargs = load_dataset_kwargs or {}
         retrieval_kwargs = retrieval_kwargs or {}
@@ -345,8 +343,8 @@ class CWQDataset(KGQABaseDataset):
         force_reload: bool = False,
         verbose: bool = False,
         use_pcst: bool = True,
-        load_dataset_kwargs: Optional[Dict[str, Any]] = None,
-        retrieval_kwargs: Optional[Dict[str, Any]] = None,
+        load_dataset_kwargs: dict[str, Any] | None = None,
+        retrieval_kwargs: dict[str, Any] | None = None,
     ) -> None:
         load_dataset_kwargs = load_dataset_kwargs or {}
         retrieval_kwargs = retrieval_kwargs or {}
