@@ -128,13 +128,13 @@ class APPNP(MessagePassing):
                 assert original_edge_weight is not None
                 if isinstance(edge_index, Tensor):
                     if is_torch_sparse_tensor(edge_index):
-                        edge_weight = F.dropout(
-                            original_edge_weight, p=self.dropout)
-                        edge_index = set_sparse_value(
-                            original_edge_index, edge_weight)
+                        edge_weight = F.dropout(original_edge_weight,
+                                                p=self.dropout)
+                        edge_index = set_sparse_value(original_edge_index,
+                                                      edge_weight)
                     else:
-                        edge_weight = F.dropout(
-                            original_edge_weight, p=self.dropout)
+                        edge_weight = F.dropout(original_edge_weight,
+                                                p=self.dropout)
                 else:
                     value = F.dropout(original_edge_weight, p=self.dropout)
                     edge_index = edge_index.set_value(value, layout='coo')
