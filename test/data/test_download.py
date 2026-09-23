@@ -1,5 +1,4 @@
 import ssl
-from unittest.mock import patch
 
 from torch_geometric.data.download import _get_ssl_context, download_url
 
@@ -28,9 +27,8 @@ def test_download_url_passes_verified_context(monkeypatch, tmp_path):
         captured['context'] = context
         return _FakeResponse()
 
-    monkeypatch.setattr(
-        'torch_geometric.data.download.urllib.request.urlopen', _fake_urlopen
-    )
+    monkeypatch.setattr('torch_geometric.data.download.urllib.request.urlopen',
+                        _fake_urlopen)
 
     download_url('https://example.com/data/cora.tgz', str(tmp_path), log=False)
 
@@ -38,7 +36,8 @@ def test_download_url_passes_verified_context(monkeypatch, tmp_path):
     assert captured['context'].check_hostname is True
 
 
-def test_download_url_passes_unverified_context_when_opt_out(monkeypatch, tmp_path):
+def test_download_url_passes_unverified_context_when_opt_out(
+        monkeypatch, tmp_path):
     captured = {}
 
     class _FakeResponse:
@@ -50,9 +49,8 @@ def test_download_url_passes_unverified_context_when_opt_out(monkeypatch, tmp_pa
         return _FakeResponse()
 
     monkeypatch.setenv('TORCH_GEOMETRIC_VERIFY_SSL', '0')
-    monkeypatch.setattr(
-        'torch_geometric.data.download.urllib.request.urlopen', _fake_urlopen
-    )
+    monkeypatch.setattr('torch_geometric.data.download.urllib.request.urlopen',
+                        _fake_urlopen)
 
     download_url('https://example.com/data/cora.tgz', str(tmp_path), log=False)
 
