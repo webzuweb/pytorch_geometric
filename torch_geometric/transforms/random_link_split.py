@@ -244,7 +244,8 @@ class RandomLinkSplit(BaseTransform):
                                                    num_neg_samples=2 * num_neg,
                                                    method='sparse',
                                                    force_undirected=True)
-                neg_edge_index = neg_edge_index[:, :neg_edge_index.size(1) // 2]
+                neg_edge_index = neg_edge_index[:, :neg_edge_index.size(1) //
+                                                2]
             else:
                 neg_edge_index = negative_sampling(edge_index, size,
                                                    num_neg_samples=num_neg,
